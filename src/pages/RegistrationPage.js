@@ -1,5 +1,5 @@
 import {Link} from 'react-router-dom';
-import React from 'react';
+import React, { useState } from 'react';
 import {
   MDBContainer,
   MDBInput,
@@ -9,13 +9,57 @@ import {
 }
 from 'mdb-react-ui-kit';
 
-function App() {
+import { auth } from './firebase';
+import { createUserWithEmailAndPassword } from 'firebase/auth';
+
+const RegistrationPage = () => {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [repeatPassword, setRepeatPassword] = useState('');
+  const navigate = useNavigate();
+
+  const handleRegister = async (e) => {
+    e.preventDefault();
+    if (password !== repeatPassword) {
+      alert("Passwords do not match");
+      return;
+    }
+    try {
+      await createUserWithEmailAndPassword(auth, email, password);
+      alert('User registered successfully');
+      navigate('/LoginPage');
+    } catch (error) {
+      alert(error.message);
+    }
+  };
+
   return (
     <MDBContainer className="p-3 my-5 d-flex flex-column w-50">
 
-      <MDBInput wrapperClass='mb-4' label='Email address' id='form1' type='email'/>
-      <MDBInput wrapperClass='mb-4' label='Password' id='form2' type='password'/>
-      <MDBInput wrapperClass='mb-4' label='Repeat Password' id='form3' type='password'/>
+      <MDBInput 
+          wrapperClass='mb-4' 
+          label='Email address' 
+          id='form1' 
+          type='email' 
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          required />
+      <MDBInput 
+          wrapperClass='mb-4' 
+          label='Password' 
+          id='form2' 
+          type='password'
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          required />
+      <MDBInput 
+          wrapperClass='mb-4' 
+          label='Repeat Password' 
+          id='form3' 
+          type='password'
+          value={repeatPassword}
+          onChange={(e) => setRepeatPassword(e.target.value)}
+          required />
 
       <div className="d-flex justify-content-between mx-3 mb-4">
         <MDBCheckbox name='flexCheck' value='' id='flexCheckDefault' label='Remember me' />
@@ -33,4 +77,5 @@ function App() {
   );
 }
 
-export default App;
+export default RegistrationPage;
+
