@@ -1,4 +1,4 @@
-import {Link} from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import React, { useState } from 'react';
 import {
   MDBContainer,
@@ -9,8 +9,10 @@ import {
 }
 from 'mdb-react-ui-kit';
 
-import { auth } from './firebase';
+import { auth } from '../firebase';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { db } from '../firebase';
+import { doc, setDoc } from 'firebase/firestore';
 
 const RegistrationPage = () => {
   const [email, setEmail] = useState('');
@@ -25,8 +27,16 @@ const RegistrationPage = () => {
       return;
     }
     try {
-      await createUserWithEmailAndPassword(auth, email, password);
-      alert('User registered successfully');
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      const user = userCredential.user;
+
+      // Save user data to Firestore
+      await setDoc(doc(db, "WebUsers", user.uid), {
+        Email: email,
+        CreatedAt: new Date()
+      });
+
+      alert('User registered and data saved successfully');
       navigate('/LoginPage');
     } catch (error) {
       alert(error.message);
