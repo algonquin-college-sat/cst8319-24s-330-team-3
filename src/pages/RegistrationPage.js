@@ -40,7 +40,7 @@ function RegistrationPage() {
       const user = userCredential.user;
 
       const userDoc = {
-        WebUserID: user.uid,
+        RestaurantID: user.uid,
         Email: email,
         RestaurantName: restaurantName,
         Location: location,
@@ -136,7 +136,7 @@ function RegistrationPage() {
           label='Open Time' 
           id='openTime' 
           type='text'
-          placeholder='e.g. 11 AM'
+          placeholder='e.g. 11:00'
           value={openTime}
           onChange={(e) => setOpenTime(e.target.value)}
           required 
@@ -146,7 +146,7 @@ function RegistrationPage() {
           label='Closed Time' 
           id='closeTime' 
           type='text'
-          placeholder='e.g. 10 PM'
+          placeholder='e.g. 22:00'
           value={closedTime}
           onChange={(e) => setClosedTime(e.target.value)}
           required 
@@ -156,7 +156,7 @@ function RegistrationPage() {
           label='Average Spending' 
           id='averageSpending' 
           type='text'
-          placeholder='e.g. 1 hour'
+          placeholder='e.g. $30'
           value={averageSpending}
           onChange={(e) => setAverageSpending(e.target.value)}
           required 
