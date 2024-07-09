@@ -1,14 +1,11 @@
-import { Link, useNavigate } from 'react-router-dom';
 import React, { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import {
   MDBContainer,
   MDBInput,
   MDBCheckbox,
   MDBBtn,
-  // MDBIcon
-}
-from 'mdb-react-ui-kit';
-
+} from 'mdb-react-ui-kit';
 import { auth } from '../firebase';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { db } from '../firebase';
@@ -18,30 +15,49 @@ function RegistrationPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [repeatPassword, setRepeatPassword] = useState('');
+  const [restaurantName, setRestaurantName] = useState('');
+  const [location, setLocation] = useState('');
+  const [phoneNumber, setPhoneNumber] = useState('');
+  const [foodType, setFoodType] = useState('');
+  const [openTime, setOpenTime] = useState('');
+  const [closedTime, setClosedTime] = useState('');
+  const [averageSpending, setAverageSpending] = useState('');
+  const [isKidFriendly, setIsKidFriendly] = useState(false);
+  const [isPetFriendly, setIsPetFriendly] = useState(false);
+  const [hasPatio, setHasPatio] = useState(false);
   const navigate = useNavigate();
 
   const handleRegister = async (e) => {
     e.preventDefault();
-    console.log("handleRegister function called");
 
     if (password !== repeatPassword) {
       alert("Passwords do not match");
       return;
     }
+
     try {
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
-      console.log("user created: ", user);
 
-    const userDoc = {
+      const userDoc = {
         WebUserID: user.uid,
         Email: email,
+        RestaurantName: restaurantName,
+        Location: location,
+        PhoneNumber: phoneNumber,
+        FoodType: foodType,
+        OpenTime: openTime,
+        ClosedTime: closedTime,
+        AverageSpending: averageSpending,
+        KidFriendly: isKidFriendly,
+        PetFriendly: isPetFriendly,
+        HasPatio: hasPatio,
         createdAt: new Date()
       };
 
-      await setDoc(doc(db, "WebUsers", user.uid), userDoc);
+      await setDoc(doc(db, "Restaurants", user.uid), userDoc);
 
-      alert('User registered and data saved successfully');
+      alert('User registered and profile saved successfully');
       navigate('/LoginPage');
     } catch (error) {
       alert(error.message);
@@ -52,36 +68,130 @@ function RegistrationPage() {
     <MDBContainer className="p-3 my-5 d-flex flex-column w-50">
       <form onSubmit={handleRegister}>
         <MDBInput 
-            wrapperClass='mb-4' 
-            label='Email address' 
-            id='form1' 
-            type='email' 
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required 
+          wrapperClass='mb-4' 
+          label='Email address' 
+          id='form1' 
+          type='email' 
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          required 
         />
         <MDBInput 
-            wrapperClass='mb-4' 
-            label='Password' 
-            id='form2' 
-            type='password'
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required 
+          wrapperClass='mb-4' 
+          label='Password' 
+          id='form2' 
+          type='password'
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          required 
         />
         <MDBInput 
-            wrapperClass='mb-4' 
-            label='Repeat Password' 
-            id='form3' 
-            type='password'
-            value={repeatPassword}
-            onChange={(e) => setRepeatPassword(e.target.value)}
-            required 
+          wrapperClass='mb-4' 
+          label='Repeat Password' 
+          id='form3' 
+          type='password'
+          value={repeatPassword}
+          onChange={(e) => setRepeatPassword(e.target.value)}
+          required 
         />
-
-        <div className="d-flex justify-content-between mx-3 mb-4">
-          <MDBCheckbox name='flexCheck' value='' id='flexCheckDefault' label='Remember me' />
+        <MDBInput 
+          wrapperClass='mb-4' 
+          label='Restaurant Name' 
+          id='restaurantName' 
+          type='text'
+          value={restaurantName}
+          onChange={(e) => setRestaurantName(e.target.value)}
+          required 
+        />
+        <MDBInput 
+          wrapperClass='mb-4' 
+          label='Location' 
+          id='location' 
+          type='text'
+          value={location}
+          onChange={(e) => setLocation(e.target.value)}
+          required 
+        />
+        <MDBInput 
+          wrapperClass='mb-4' 
+          label='Phone Number' 
+          id='phoneNumber' 
+          type='text'
+          placeholder='xxx-xxx-xxxx'
+          value={phoneNumber}
+          onChange={(e) => setPhoneNumber(e.target.value)}
+          required 
+        />
+        <MDBInput 
+          wrapperClass='mb-4' 
+          label='Food Type' 
+          id='foodType' 
+          type='text'
+          value={foodType}
+          onChange={(e) => setFoodType(e.target.value)}
+          required 
+        />
+        <MDBInput 
+          wrapperClass='mb-4' 
+          label='Open Time' 
+          id='openTime' 
+          type='text'
+          placeholder='e.g. 11 AM'
+          value={openTime}
+          onChange={(e) => setOpenTime(e.target.value)}
+          required 
+        />
+        <MDBInput 
+          wrapperClass='mb-4' 
+          label='Closed Time' 
+          id='closeTime' 
+          type='text'
+          placeholder='e.g. 10 PM'
+          value={closedTime}
+          onChange={(e) => setClosedTime(e.target.value)}
+          required 
+        />
+        <MDBInput 
+          wrapperClass='mb-4' 
+          label='Average Spending' 
+          id='averageSpending' 
+          type='text'
+          placeholder='e.g. 1 hour'
+          value={averageSpending}
+          onChange={(e) => setAverageSpending(e.target.value)}
+          required 
+        />
+        <div className="mb-4">
+          <MDBCheckbox 
+            name='isKidFriendly' 
+            value="KidFriendly" 
+            id='isKidFriendly' 
+            label='Kid Friendly' 
+            checked={isKidFriendly}
+            onChange={() => setIsKidFriendly(!isKidFriendly)} 
+          />
         </div>
+        <div className="mb-4">
+          <MDBCheckbox 
+            name='isPetFriendly' 
+            value="PetFriendly" 
+            id='isPetFriendly' 
+            label='Pet Friendly' 
+            checked={isPetFriendly}
+            onChange={() => setIsPetFriendly(!isPetFriendly)} 
+          />
+        </div>
+        <div className="mb-4">
+          <MDBCheckbox 
+            name='hasPatio' 
+            value="HasPatio" 
+            id='hasPatio' 
+            label='Patio' 
+            checked={hasPatio}
+            onChange={() => setHasPatio(!hasPatio)} 
+          />
+        </div>
+        
         <MDBBtn className="mb-4" type="submit">Register</MDBBtn>
       </form>
       
@@ -94,4 +204,3 @@ function RegistrationPage() {
 }
 
 export default RegistrationPage;
-

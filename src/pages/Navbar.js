@@ -32,7 +32,7 @@ const Navbar = () => {
 
 
 <MDBDropdown>
-  <MDBDropdownToggle tag="div" className="d-flex align-items-center hidden-arrow" aria-expanded="false" data-mdb-tooltip-init title="profile">
+  <MDBDropdownToggle tag="div" className="d-flex align-items-center hidden-arrow" aria-expanded="false" data-mdb-tooltip-init title="Profile">
     <img
       src="https://th.bing.com/th/id/OIP.rO_erAHn811Sm0TR4TohQgHaHa?rs=1&pid=ImgDetMain"
       className="rounded-circle"
@@ -42,10 +42,13 @@ const Navbar = () => {
   </MDBDropdownToggle>
   <MDBDropdownMenu>
     <MDBDropdownItem>
-      <Link to="/ProfilePage" className="dropdown-item">My profile</Link>
+      <Link to="/ProfilePage" className="dropdown-item">My Profile</Link>
     </MDBDropdownItem>
     <MDBDropdownItem>
       <Link to="/LoginPage" className="dropdown-item">Login</Link>
+    </MDBDropdownItem>
+    <MDBDropdownItem>
+      <Link to="/" className="dropdown-item">Logout</Link>
     </MDBDropdownItem>
   </MDBDropdownMenu>
 </MDBDropdown>
