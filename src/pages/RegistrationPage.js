@@ -74,6 +74,7 @@ function RegistrationPage() {
           type='email' 
           value={email}
           onChange={(e) => setEmail(e.target.value)}
+          placeholder='Enter a valid email address'
           required 
         />
         <MDBInput 
@@ -124,15 +125,6 @@ function RegistrationPage() {
         />
         <MDBInput 
           wrapperClass='mb-4' 
-          label='Food Type' 
-          id='foodType' 
-          type='text'
-          value={foodType}
-          onChange={(e) => setFoodType(e.target.value)}
-          required 
-        />
-        <MDBInput 
-          wrapperClass='mb-4' 
           label='Open Time' 
           id='openTime' 
           type='text'
@@ -161,6 +153,26 @@ function RegistrationPage() {
           onChange={(e) => setAverageSpending(e.target.value)}
           required 
         />
+        <div className="mb-4">
+          <select 
+            id="foodType" 
+            className="form-select" 
+            value={foodType}
+            onChange={(e) => setFoodType(e.target.value)}
+            required
+          >
+            <option value="" disabled>Food Type</option>
+            <option value="Pizza">Pizza</option>
+            <option value="Japanese">Japanese</option>
+            <option value="Middle Eastern">Middle Eastern</option>
+            <option value="Mixed">Mixed</option>
+            <option value="Burger">Burger</option>
+            <option value="Chinese">Chinese</option>
+            <option value="Korean">Korean</option>
+            <option value="Indian">Indian</option>
+            <option value="Vegetarian">Vegetarian</option>
+          </select>
+        </div>
         <div className="mb-4">
           <MDBCheckbox 
             name='isKidFriendly' 
