@@ -24,7 +24,13 @@ Ensure you have the following software installed on your system:
     npm install react-router-dom@6
     ```
 
-5. **Start the development server**:
+5. **Install packages**:
+
+    ```bash
+    npm install @mui/material @emotion/react @emotion/styled
+    ```
+   
+6. **Start the development server**:
 
     ```bash
     npm start
