@@ -67,7 +67,7 @@ const ProfilePage = () => {
     }
 
     if (!timeRegex.test(restaurant.ClosedTime)) {
-      newErrors.ClosedTime = 'Close time must be in the format HH:MM';
+      newErrors.ClosedTime = 'Closed time must be in the format HH:MM';
     }
 
     if (restaurant.Location.length < 5 || restaurant.Location.length > 100) {

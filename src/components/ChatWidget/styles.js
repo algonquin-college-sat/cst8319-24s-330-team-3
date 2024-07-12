@@ -29,9 +29,9 @@ export const styles = {
     bottom: "70px",
     right: "20px",
     // Size
-    width: "370px",
+    width: "200px",
     // width: "420px",
-    height: "65vh",
+    height: "55vh",
     maxWidth: "calc(100% - 48px)",
     maxHeight: "calc(100% - 48px)",
     backgroundColor: "white",
