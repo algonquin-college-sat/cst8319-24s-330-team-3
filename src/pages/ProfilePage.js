@@ -22,14 +22,15 @@ const ProfilePage = () => {
   const [restaurant, setRestaurant] = useState({});
   const [editMode, setEditMode] = useState(false);
   const [initialRestaurant, setInitialRestaurant] = useState({});
+  const [errors, setErrors] = useState({});
   const navigate = useNavigate();
-  const [isLoggedIn, setIsLoggedIn] = useState(false); // Initialize isLoggedIn as false
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
       if (user) {
         setUser(user);
-        setIsLoggedIn(true); // Set isLoggedIn to true when user is logged in
+        setIsLoggedIn(true);
         const docRef = doc(db, 'Restaurants', user.uid);
         const docSnap = await getDoc(docRef);
         if (docSnap.exists()) {
@@ -39,7 +40,7 @@ const ProfilePage = () => {
           console.log('No such document!');
         }
       } else {
-        setIsLoggedIn(false); // User is not logged in
+        setIsLoggedIn(false);
         setUser(null);
       }
     });
@@ -47,7 +48,41 @@ const ProfilePage = () => {
     return () => unsubscribe();
   }, []);
 
+  const validate = () => {
+    const newErrors = {};
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const phoneRegex = /^\d{3}-\d{3}-\d{4}$/;
+    const timeRegex = /^\d{2}:\d{2}$/;
+
+    if (!emailRegex.test(restaurant.Email)) {
+      newErrors.Email = 'Please enter a valid email address';
+    }
+
+    if (!phoneRegex.test(restaurant.PhoneNumber)) {
+      newErrors.PhoneNumber = 'Phone number must be in the format 123-456-7890';
+    }
+
+    if (!timeRegex.test(restaurant.OpenTime)) {
+      newErrors.OpenTime = 'Open time must be in the format HH:MM';
+    }
+
+    if (!timeRegex.test(restaurant.ClosedTime)) {
+      newErrors.ClosedTime = 'Close time must be in the format HH:MM';
+    }
+
+    if (restaurant.Location.length < 5 || restaurant.Location.length > 100) {
+      newErrors.Location = 'Location must be between 5 and 100 characters';
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
   const handleUpdate = async () => {
+    if (!validate()) {
+      return;
+    }
+
     const docRef = doc(db, 'Restaurants', user.uid);
     await updateDoc(docRef, restaurant);
     setEditMode(false);
@@ -65,6 +100,7 @@ const ProfilePage = () => {
   const handleCancel = () => {
     setRestaurant(initialRestaurant);
     setEditMode(false);
+    setErrors({});
   };
 
   if (!isLoggedIn) {
@@ -102,8 +138,8 @@ const ProfilePage = () => {
                 'Restaurant Name': 'RestaurantName',
                 Email: 'Email',
                 Phone: 'PhoneNumber',
-                'Open Hours': 'OpenTime',
-                'Close Hours': 'ClosedTime',
+                'Open Time': 'OpenTime',
+                'Closed Time': 'ClosedTime',
                 Location: 'Location',
                 'Average Spending': 'AverageSpending',
               }).map(([label, key]) => (
@@ -118,10 +154,12 @@ const ProfilePage = () => {
                           name={key}
                           value={restaurant[key] || ''}
                           onChange={handleChange}
+                          className={errors[key] ? 'is-invalid' : ''}
                         />
                       ) : (
                         <p className="text-muted mb-0">{restaurant[key]}</p>
                       )}
+                      {errors[key] && <div className="text-danger">{errors[key]}</div>}
                     </div>
                   </div>
                   <hr />
@@ -199,3 +237,4 @@ const ProfilePage = () => {
 };
 
 export default ProfilePage;
+
