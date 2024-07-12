@@ -15,9 +15,9 @@ const SideNavPage = () => {
      <div>
     {/* <MDBNavbar expand="lg" light bgColor="light" className="w-100" >
     </MDBNavbar> */}
-     <MDBContainer className="d-flex flex-column bg-light p-1 float-start " style={{ width: '15vw' }}>
+     <MDBContainer className="d-flex flex-column p-1 float-start " style={{ width: '15vw' }}>
     <MDBNavbarNav
-      className="flex-column bg-light p-1  "
+      className="flex-column p-1  "
 
     >
 
@@ -27,11 +27,6 @@ const SideNavPage = () => {
         </MDBNavbarLink>
       </MDBNavbarItem>
 
-      <MDBNavbarItem>
-        <MDBNavbarLink tag={Link} to="/SettingsPage">
-          Settings
-        </MDBNavbarLink>
-      </MDBNavbarItem>
 
       <MDBNavbarItem>
         <MDBNavbarLink tag={Link} to="/ProfilePage">

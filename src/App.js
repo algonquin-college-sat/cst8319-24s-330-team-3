@@ -7,7 +7,6 @@ import LoginPage from './pages/LoginPage';
 import RegistrationPage from './pages/RegistrationPage';
 import ProfilePage from './pages/ProfilePage';
 import SideNavPage from './pages/SideNavPage';
-import SettingsPage from './pages/SettingsPage';
 import TransferList from './pages/TransferList';
 import BookingDetails from './pages/BookingDetails';
 
@@ -24,7 +23,6 @@ return(
       <Route path="/RegistrationPage" element={<RegistrationPage />} />
       <Route path="/ProfilePage" element={<ProfilePage />} />
       <Route path="/SideNavPage" element={<SideNavPage />} />
-      <Route path="/SettingsPage" element={<SettingsPage />} />
       <Route path="/TransferList" element={<TransferList/>} />
       <Route path="/BookingDetails" element={<BookingDetails/>} />
       <Route path="/bookingdetails/:bookingId" element={<BookingDetails />} />
@@ -37,3 +35,4 @@ return(
 }
 
 export default App;
+
