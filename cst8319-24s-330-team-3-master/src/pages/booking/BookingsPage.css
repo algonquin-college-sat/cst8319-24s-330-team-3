@@ -1,0 +1,19 @@
+@import url('https://fonts.googleapis.com/css?family=Assistant');
+body {
+  background: #fff;
+  font-family: Assistant, sans-serif;
+}
+
+.cell-1 {
+  border-collapse: separate;
+  border-spacing: 0 4em;
+  background: #dddcdc;;
+  border-bottom: 5px solid transparent;
+  /*background-color: gold;*/
+  background-clip: padding-box;
+}
+
+thead {
+  background: #bab8b8;
+}
+
