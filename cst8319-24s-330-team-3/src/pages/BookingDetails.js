@@ -2,6 +2,9 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { Paper, Typography, Grid, CircularProgress } from "@mui/material";
 import { db } from "../firebase";
+import ChatWidget from "../components/ChatWidget";
+import Button from "@mui/material/Button";
+import { Link } from 'react-router-dom';
 import {
   collection,
   getDocs,
@@ -112,7 +115,21 @@ const BookingDetails = () => {
           </Grid>
         </Grid>
       )}
+
+   
+<ChatWidget></ChatWidget>
+<Link to="/BookingsPage" >
+<Button  sx={{backgroundColor: "lightgrey",
+              color: "black",
+              marginRight: 1,
+              float: "rightr",
+              
+              }}> Back </Button>
+              </Link>
+
     </Paper>
+    
+    
   );
 };
 

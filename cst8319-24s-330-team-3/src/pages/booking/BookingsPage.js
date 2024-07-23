@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import SideNavPage from "../SideNavPage";
 import TransferList from "../TransferList";
-import ChatWidget from "../../components/ChatWidget";
+
 import {
   MDBDropdown,
   MDBDropdownMenu,
@@ -13,8 +13,8 @@ import "./BookingsPage.css";
 const BookingsPage = () => {
   const [status, setStatus] = useState("Closed");
 
-  const openTime = 9; // Restaurant opens at 9 AM
-  const closeTime = 22; // Restaurant closes at 10 PM
+  const openTime = 0; // Restaurant opens at 0 AM
+  const closeTime = 24; // Restaurant closes at 12 PM
 
   useEffect(() => {
     const checkStatus = () => {
@@ -36,7 +36,7 @@ const BookingsPage = () => {
     switch (status) {
       case "Open":
         return "lightgreen";
-      case "Closed":
+      case "Close":
         return "grey";
       case "Pause":
         return "red";
@@ -55,7 +55,7 @@ const BookingsPage = () => {
           <MDBDropdownItem link onClick={() => setStatus("Open")}>
             Open
           </MDBDropdownItem>
-          <MDBDropdownItem link onClick={() => setStatus("Closed")}>
+          <MDBDropdownItem link onClick={() => setStatus("Close")}>
             Close
           </MDBDropdownItem>
           <MDBDropdownItem link onClick={() => setStatus("Pause")}>
@@ -75,7 +75,7 @@ const BookingsPage = () => {
         <div className="col-md-11">
           <TransferList />
         </div>
-        <ChatWidget />
+        
       </div>
     </div>
   );
