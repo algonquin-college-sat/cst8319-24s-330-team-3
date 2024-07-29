@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import SideNavPage from "../SideNavPage";
 import TransferList from "../TransferList";
-
+import Calendar from "react-calendar";
 import {
   MDBDropdown,
   MDBDropdownMenu,
@@ -9,9 +9,11 @@ import {
   MDBDropdownItem,
 } from "mdb-react-ui-kit";
 import "./BookingsPage.css";
+import 'react-calendar/dist/Calendar.css'; 
 
 const BookingsPage = () => {
   const [status, setStatus] = useState("Closed");
+  const [date, setDate] = useState(new Date()); //selected date
 
   const openTime = 0; // Restaurant opens at 0 AM
   const closeTime = 24; // Restaurant closes at 12 PM
@@ -67,15 +69,26 @@ const BookingsPage = () => {
       <div className="status-display" style={{ textAlign: "center", margin: "20px 0" }}>
         <h4 style={{ fontWeight: "bold", fontStyle: "italic" }}>Current Status: {status}</h4>
       </div>
-      
+
+     
+
       <div className="d-flex">
         <div className="col-md-1">
           <SideNavPage />
         </div>
         <div className="col-md-11">
+
+        {/* calendar */}
+        <div className="calendar-container" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '400px', marginBottom: '0px' }}>
+        <Calendar
+          onChange={setDate}
+          value={date}
+          style={{ maxWidth: '100%', width: '100%' }}
+        />
+      </div>
+      
           <TransferList />
         </div>
-        
       </div>
     </div>
   );
