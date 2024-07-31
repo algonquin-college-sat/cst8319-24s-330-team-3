@@ -70,7 +70,7 @@ function TransferList() {
           ...doc.data(),
         }));
         const unhandledBookings = bookings.filter(
-          (booking) => !booking.isHandled
+          (booking) => !booking.isHandled && !booking.isDenied
         );
         const handledBookings = bookings.filter((booking) => booking.isHandled);
         setLeft(unhandledBookings);
@@ -97,8 +97,16 @@ function TransferList() {
     setOpenDeleteDialog(false);
     setLeft(not(left, [selectedItem]));
 
-    await deleteDoc(doc(db, "Bookings", selectedItem.id));
-    setSelectedItem(null);
+    const denialReasons = [];
+    if (checkbox1) denialReasons.push("No seat available");
+    if (checkbox2) denialReasons.push("Can't follow the comment");
+    if (checkbox3) denialReasons.push("Don't accept reservations right now");
+    if (inputText) denialReasons.push(`Additional Info: ${inputText}`);
+
+    await updateDoc(doc(db, "Bookings", selectedItem.id), {
+      isDenied: true,
+      denialReason: denialReasons.join(", "),
+    });
   };
 
   const handleFinishItem = (item) => () => {
@@ -230,15 +238,18 @@ function TransferList() {
         aria-labelledby="delete-dialog-title"
         aria-describedby="delete-dialog-description"
       >
-        <DialogTitle id="delete-dialog-title" style={{ fontWeight: "bold" }}>Are you sure?</DialogTitle>
+        <DialogTitle id="delete-dialog-title" style={{ fontWeight: "bold" }}>
+          Are you sure?
+        </DialogTitle>
         <DialogContent>
-          <DialogContentText id="delete-dialog-description" style={{ fontWeight: "bold" }}>
+          <DialogContentText
+            id="delete-dialog-description"
+            style={{ fontWeight: "bold" }}
+          >
             This action will permanently delete the item.
           </DialogContentText>
           <p></p>
-          <DialogContentText >
-           Choose the reason
-          </DialogContentText>
+          <DialogContentText>Choose the reason</DialogContentText>
           <FormControlLabel
             control={
               <Checkbox
