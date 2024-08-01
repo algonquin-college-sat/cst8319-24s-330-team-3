@@ -23,19 +23,31 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import Typography from "@mui/material/Typography";
+import Checkbox from "@mui/material/Checkbox";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import TextField from "@mui/material/TextField";
 import { useNavigate } from "react-router-dom";
+import { parse, format } from 'date-fns';
+
+const parseDate = (dateString) => {
+  return parse(dateString, 'yyyy/MM/dd HH:mm', new Date());
+};
 
 function not(a, b) {
   return a.filter((value) => b.indexOf(value) === -1);
 }
 
-function TransferList() {
+function TransferList({selectedDate}) {
   const [left, setLeft] = useState([]);
   const [right, setRight] = useState([]);
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
   const [openFinishDialog, setOpenFinishDialog] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
   const [uid, setUid] = useState(null);
+  const [checkbox1, setCheckbox1] = useState(false);
+  const [checkbox2, setCheckbox2] = useState(false);
+  const [checkbox3, setCheckbox3] = useState(false);
+  const [inputText, setInputText] = useState("");
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -62,17 +74,24 @@ function TransferList() {
           id: doc.id,
           ...doc.data(),
         }));
-        const unhandledBookings = bookings.filter(
-          (booking) => !booking.isHandled
+
+        // Function to filter bookings by selected date
+        const filteredBookings = bookings.filter((booking) => {
+          const bookingDate = parseDate(booking.bookingDttm);
+          return bookingDate.toDateString() === selectedDate.toDateString();
+        });
+
+        const unhandledBookings = filteredBookings.filter(
+          (booking) => !booking.isHandled && !booking.isDenied
         );
-        const handledBookings = bookings.filter((booking) => booking.isHandled);
+        const handledBookings = filteredBookings.filter((booking) => booking.isHandled);
         setLeft(unhandledBookings);
         setRight(handledBookings);
       };
 
       fetchBookings();
     }
-  }, [uid]);
+  }, [uid, selectedDate]);
 
   const handleAcceptItem = (item) => async () => {
     setRight([...right, item]);
@@ -90,8 +109,16 @@ function TransferList() {
     setOpenDeleteDialog(false);
     setLeft(not(left, [selectedItem]));
 
-    await deleteDoc(doc(db, "Bookings", selectedItem.id));
-    setSelectedItem(null);
+    const denialReasons = [];
+    if (checkbox1) denialReasons.push("No seat available");
+    if (checkbox2) denialReasons.push("Can't follow the comment");
+    if (checkbox3) denialReasons.push("Don't accept reservations right now");
+    if (inputText) denialReasons.push(`Additional Info: ${inputText}`);
+
+    await updateDoc(doc(db, "Bookings", selectedItem.id), {
+      isDenied: true,
+      denialReason: denialReasons.join(", "),
+    });
   };
 
   const handleFinishItem = (item) => () => {
@@ -223,11 +250,60 @@ function TransferList() {
         aria-labelledby="delete-dialog-title"
         aria-describedby="delete-dialog-description"
       >
-        <DialogTitle id="delete-dialog-title">Are you sure?</DialogTitle>
+        <DialogTitle id="delete-dialog-title" style={{ fontWeight: "bold" }}>
+          Are you sure?
+        </DialogTitle>
         <DialogContent>
-          <DialogContentText id="delete-dialog-description">
+          <DialogContentText
+            id="delete-dialog-description"
+            style={{ fontWeight: "bold" }}
+          >
             This action will permanently delete the item.
           </DialogContentText>
+          <p></p>
+          <DialogContentText>Choose the reason</DialogContentText>
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={checkbox1}
+                onChange={(e) => setCheckbox1(e.target.checked)}
+                name="checkbox1"
+                color="primary"
+              />
+            }
+            label="No seat available"
+          />
+          <p></p>
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={checkbox2}
+                onChange={(e) => setCheckbox2(e.target.checked)}
+                name="checkbox2"
+                color="primary"
+              />
+            }
+            label="Can't follow the comment"
+          />
+          <p></p>
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={checkbox3}
+                onChange={(e) => setCheckbox3(e.target.checked)}
+                name="checkbox3"
+                color="primary"
+              />
+            }
+            label="Don't accept reservations right now"
+          />
+          <TextField
+            label="Additional Information"
+            fullWidth
+            value={inputText}
+            onChange={(e) => setInputText(e.target.value)}
+            margin="normal"
+          />
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setOpenDeleteDialog(false)} color="primary">

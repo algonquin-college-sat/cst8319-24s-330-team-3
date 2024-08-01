@@ -29,17 +29,14 @@ export const styles = {
     bottom: "70px",
     right: "20px",
     // Size
-    width: "200px",
-    // width: "420px",
-    height: "55vh",
+    width: "350px",
+    height: "75vh",
     maxWidth: "calc(100% - 48px)",
     maxHeight: "calc(100% - 48px)",
     backgroundColor: "white",
-    // Border
     borderRadius: "12px",
     border: `2px solid ${colors.primary}`,
     overflow: "hidden",
-    // Shadow
     boxShadow: "0px 0px 16px 6px rgba(0, 0, 0, 0.33)",
   },
 

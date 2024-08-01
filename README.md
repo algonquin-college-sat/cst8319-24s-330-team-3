@@ -27,10 +27,15 @@ Ensure you have the following software installed on your system:
 5. **Install packages**:
 
     ```bash
+    npm install react-calendar
+    ```
+
+6.. **Install dependencies**:
+    ```bash
     npm install @mui/material @emotion/react @emotion/styled
     ```
    
-6. **Start the development server**:
+7.  **Start the development server**:
 
     ```bash
     npm start
