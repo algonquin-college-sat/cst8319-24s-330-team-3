@@ -134,7 +134,7 @@ function TransferList({selectedDate}) {
   };
 
   const handleDetails = (item) => () => {
-    navigate(`/bookingdetails/${item.id}`, { state: { bookingId: item.id } });
+    navigate(`/bookingdetails/${item.id}`, { state: { bookingId: item.id, selectedDate } });
   };
 
   const customList = (items, isLeftColumn) => (

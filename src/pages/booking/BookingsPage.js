@@ -10,10 +10,17 @@ import {
 } from "mdb-react-ui-kit";
 import "./BookingsPage.css";
 import 'react-calendar/dist/Calendar.css'; 
+import { useLocation } from "react-router-dom";
 
 const BookingsPage = () => {
+  const location = useLocation();
   const [status, setStatus] = useState("Closed");
-  const [date, setDate] = useState(new Date());
+  
+  const initialDate = location.state?.selectedDate
+    ? new Date(location.state.selectedDate)
+    : new Date();
+
+  const [date, setDate] = useState(initialDate);
 
   const openTime = 0; // Restaurant opens at 0 AM
   const closeTime = 24; // Restaurant closes at 12 PM
