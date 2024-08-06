@@ -27,12 +27,17 @@ import Checkbox from "@mui/material/Checkbox";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import TextField from "@mui/material/TextField";
 import { useNavigate } from "react-router-dom";
+import { parse, format } from 'date-fns';
+
+const parseDate = (dateString) => {
+  return parse(dateString, 'yyyy/MM/dd HH:mm', new Date());
+};
 
 function not(a, b) {
   return a.filter((value) => b.indexOf(value) === -1);
 }
 
-function TransferList() {
+function TransferList({selectedDate}) {
   const [left, setLeft] = useState([]);
   const [right, setRight] = useState([]);
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
@@ -69,17 +74,26 @@ function TransferList() {
           id: doc.id,
           ...doc.data(),
         }));
-        const unhandledBookings = bookings.filter(
-          (booking) => !booking.isHandled
+
+        // Function to filter bookings by selected date
+        const filteredBookings = bookings.filter((booking) => {
+          const bookingDate = parseDate(booking.bookingDttm);
+          return selectedDate
+            ? bookingDate.toDateString() === selectedDate.toDateString()
+            : true; // If selectedDate is null, don't filter
+        });
+
+        const unhandledBookings = filteredBookings.filter(
+          (booking) => !booking.isHandled && !booking.isDenied
         );
-        const handledBookings = bookings.filter((booking) => booking.isHandled);
+        const handledBookings = filteredBookings.filter((booking) => booking.isHandled);
         setLeft(unhandledBookings);
         setRight(handledBookings);
       };
 
       fetchBookings();
     }
-  }, [uid]);
+  }, [uid, selectedDate]);
 
   const handleAcceptItem = (item) => async () => {
     setRight([...right, item]);
@@ -97,8 +111,16 @@ function TransferList() {
     setOpenDeleteDialog(false);
     setLeft(not(left, [selectedItem]));
 
-    await deleteDoc(doc(db, "Bookings", selectedItem.id));
-    setSelectedItem(null);
+    const denialReasons = [];
+    if (checkbox1) denialReasons.push("No seat available");
+    if (checkbox2) denialReasons.push("Can't follow the comment");
+    if (checkbox3) denialReasons.push("Don't accept reservations right now");
+    if (inputText) denialReasons.push(`Additional Info: ${inputText}`);
+
+    await updateDoc(doc(db, "Bookings", selectedItem.id), {
+      isDenied: true,
+      denialReason: denialReasons.join(", "),
+    });
   };
 
   const handleFinishItem = (item) => () => {
@@ -114,7 +136,7 @@ function TransferList() {
   };
 
   const handleDetails = (item) => () => {
-    navigate(`/bookingdetails/${item.id}`, { state: { bookingId: item.id } });
+    navigate(`/bookingdetails/${item.id}`, { state: { bookingId: item.id, selectedDate } });
   };
 
   const customList = (items, isLeftColumn) => (
@@ -125,6 +147,8 @@ function TransferList() {
         overflow: "auto",
         minHeight: "400px",
         padding: 2,
+        display: 'flex',
+        flexDirection: 'column',
       }}
     >
       <Typography variant="h6" gutterBottom>
@@ -214,13 +238,13 @@ function TransferList() {
       container
       spacing={2}
       justifyContent="center"
-      alignItems="center"
+      alignItems="flex-start" // Ensures the lists start from the same height
       style={{ height: "100vh" }}
     >
-      <Grid item xs={5}>
+      <Grid item xs={5} style={{ display: 'flex', flexDirection: 'column' }}> 
         {customList(left, true)}
       </Grid>
-      <Grid item xs={5}>
+      <Grid item xs={5} style={{ display: 'flex', flexDirection: 'column' }}>
         {customList(right, false)}
       </Grid>
 
@@ -230,15 +254,18 @@ function TransferList() {
         aria-labelledby="delete-dialog-title"
         aria-describedby="delete-dialog-description"
       >
-        <DialogTitle id="delete-dialog-title" style={{ fontWeight: "bold" }}>Are you sure?</DialogTitle>
+        <DialogTitle id="delete-dialog-title" style={{ fontWeight: "bold" }}>
+          Are you sure?
+        </DialogTitle>
         <DialogContent>
-          <DialogContentText id="delete-dialog-description" style={{ fontWeight: "bold" }}>
+          <DialogContentText
+            id="delete-dialog-description"
+            style={{ fontWeight: "bold" }}
+          >
             This action will permanently delete the item.
           </DialogContentText>
           <p></p>
-          <DialogContentText >
-           Choose the reason
-          </DialogContentText>
+          <DialogContentText>Choose the reason</DialogContentText>
           <FormControlLabel
             control={
               <Checkbox

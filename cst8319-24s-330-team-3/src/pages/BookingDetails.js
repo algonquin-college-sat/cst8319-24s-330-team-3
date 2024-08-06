@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useLocation, useNavigate } from "react-router-dom";
 import { Paper, Typography, Grid, CircularProgress } from "@mui/material";
 import { db } from "../firebase";
 import ChatWidget from "../components/ChatWidget";
@@ -16,9 +16,13 @@ import {
 
 const BookingDetails = () => {
   const { bookingId } = useParams();
+  const location = useLocation();
+  const navigate = useNavigate();
   const [booking, setBooking] = useState(null);
   const [loading, setLoading] = useState(true);
   const [comments, setComments] = useState([]);
+
+  const selectedDate = location.state?.selectedDate;
 
   useEffect(() => {
     const fetchBooking = async () => {
@@ -113,23 +117,25 @@ const BookingDetails = () => {
               <Typography variant="body2">No comments available</Typography>
             )}
           </Grid>
+          <Grid item xs={12} sx={{ marginTop: 2 }}>
+            <Button
+              sx={{ 
+                backgroundColor: "lightgrey", 
+                color: "black", 
+                marginRight: 1, 
+                float: "left", 
+                marginTop: 2 
+              }}
+              onClick={() => navigate("/BookingsPage", { state: { selectedDate } })}
+            >
+              Back
+            </Button>
+          </Grid>
         </Grid>
       )}
 
-   
-<ChatWidget></ChatWidget>
-<Link to="/BookingsPage" >
-<Button  sx={{backgroundColor: "lightgrey",
-              color: "black",
-              marginRight: 1,
-              float: "rightr",
-              
-              }}> Back </Button>
-              </Link>
-
+      <ChatWidget eventId={booking.eventId} userId={booking.bookerEmail} />
     </Paper>
-    
-    
   );
 };
 
