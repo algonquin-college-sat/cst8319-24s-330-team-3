@@ -78,7 +78,9 @@ function TransferList({selectedDate}) {
         // Function to filter bookings by selected date
         const filteredBookings = bookings.filter((booking) => {
           const bookingDate = parseDate(booking.bookingDttm);
-          return bookingDate.toDateString() === selectedDate.toDateString();
+          return selectedDate
+            ? bookingDate.toDateString() === selectedDate.toDateString()
+            : true; // If selectedDate is null, don't filter
         });
 
         const unhandledBookings = filteredBookings.filter(
@@ -145,6 +147,8 @@ function TransferList({selectedDate}) {
         overflow: "auto",
         minHeight: "400px",
         padding: 2,
+        display: 'flex',
+        flexDirection: 'column',
       }}
     >
       <Typography variant="h6" gutterBottom>
@@ -234,13 +238,13 @@ function TransferList({selectedDate}) {
       container
       spacing={2}
       justifyContent="center"
-      alignItems="center"
+      alignItems="flex-start" // Ensures the lists start from the same height
       style={{ height: "100vh" }}
     >
-      <Grid item xs={5}>
+      <Grid item xs={5} style={{ display: 'flex', flexDirection: 'column' }}> 
         {customList(left, true)}
       </Grid>
-      <Grid item xs={5}>
+      <Grid item xs={5} style={{ display: 'flex', flexDirection: 'column' }}>
         {customList(right, false)}
       </Grid>
 

@@ -15,10 +15,11 @@ import { useLocation } from "react-router-dom";
 const BookingsPage = () => {
   const location = useLocation();
   const [status, setStatus] = useState("Closed");
+  const [showCalendar, setShowCalendar] = useState(false);
   
   const initialDate = location.state?.selectedDate
     ? new Date(location.state.selectedDate)
-    : new Date();
+    : null;
 
   const [date, setDate] = useState(initialDate);
 
@@ -83,14 +84,24 @@ const BookingsPage = () => {
         </div>
         <div className="col-md-11">
 
-          {/* calendar */}
-          <div className="calendar-container" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '400px', marginBottom: '0px' }}>
-            <Calendar
-              onChange={setDate}
-              value={date}
-              style={{ maxWidth: '100%', width: '100%' }}
-            />
-          </div>
+          
+
+          <button 
+        onClick={() => setShowCalendar(prev => !prev)} 
+        style={{ marginBottom: "20px",marginLeft: "450px", padding: "10px", backgroundColor: "#007bff", color: "#fff", border: "none", borderRadius: "5px" }}
+      >
+        {showCalendar ? "Hide Calendar" : "Show Calendar"}
+      </button>
+
+      {showCalendar && (
+            <div className="calendar-container" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '400px', marginBottom: '0px' }}>
+              <Calendar
+                onChange={setDate}
+                value={date}
+                style={{ maxWidth: '100%', width: '100%' }}
+              />
+            </div>
+          )}
           
           {/* Pass the date as a prop */}
           <TransferList selectedDate={date} />
